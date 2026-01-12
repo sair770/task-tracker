@@ -19,7 +19,7 @@ export default function TVPage() {
             setCurrentTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
         }, 1000);
 
-        const syncTimer = setInterval(fetchTasks, 2000);
+        const syncTimer = setInterval(() => fetchTasks(true), 5000);
 
         return () => {
             clearInterval(timer);

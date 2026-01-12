@@ -11,7 +11,7 @@ export default function TaskList() {
     useEffect(() => {
         setMounted(true);
         fetchTasks();
-        const interval = setInterval(fetchTasks, 2000); // Poll for sync
+        const interval = setInterval(() => fetchTasks(true), 5000); // Poll silently every 5s
         return () => clearInterval(interval);
     }, []);
 

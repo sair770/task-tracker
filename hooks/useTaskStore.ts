@@ -6,7 +6,7 @@ import { Task } from '@/types';
 interface TaskState {
     tasks: Task[];
     isLoading: boolean;
-    fetchTasks: () => Promise<void>;
+    fetchTasks: (isBackground?: boolean) => Promise<void>;
     addTask: (task: { title: string, description?: string, dueDate?: number }) => Promise<void>;
     toggleTask: (id: string) => Promise<void>;
     removeTask: (id: string) => Promise<void>;
@@ -16,16 +16,18 @@ export const useTaskStore = create<TaskState>((set, get) => ({
     tasks: [],
     isLoading: false,
 
-    fetchTasks: async () => {
-        set({ isLoading: true });
+    fetchTasks: async (isBackground = false) => {
+        if (!isBackground) set({ isLoading: true });
         try {
             const res = await fetch('/api/tasks');
             const data = await res.json();
+            // Only update state if data actually changed (basic check) to avoid re-renders
+            // For now, we just set it, but removing isLoading toggle helps significantly.
             set({ tasks: data });
         } catch (e) {
             console.error("Sync error", e);
         } finally {
-            set({ isLoading: false });
+            if (!isBackground) set({ isLoading: false });
         }
     },
 
