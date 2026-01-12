@@ -1,8 +1,6 @@
-"use client";
-
 import { useTaskStore } from '@/hooks/useTaskStore';
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
+import { Link } from 'react-router-dom';
 
 export default function TVPage() {
     const { tasks, fetchTasks } = useTaskStore();
@@ -73,7 +71,7 @@ export default function TVPage() {
                 Press <span className="bg-slate-800 px-3 py-1 rounded mx-1 text-slate-400">SELECT</span> to mark done
             </div>
 
-            <Link href="/" className="absolute bottom-12 left-12 text-slate-700 hover:text-white transition">
+            <Link to="/" className="absolute bottom-12 left-12 text-slate-700 hover:text-white transition">
                 ← Back to Phone View
             </Link>
         </main>

@@ -1,34 +1,37 @@
-# Base image
-FROM node:20-alpine AS builder
-
-# Set working directory
-WORKDIR /app
-
-# Install dependencies (only required for build)
+# --- Stage 1: Build Frontend (Node) ---
+FROM node:20-alpine AS frontend-builder
+WORKDIR /app-frontend
 COPY package.json package-lock.json ./
 RUN npm ci
-
-# Copy source code
 COPY . .
-
-# Build Next.js app
 RUN npm run build
 
-# --- Production Image ---
-FROM node:20-alpine AS runner
+# --- Stage 2: Build Backend (Go) ---
+FROM golang:1.21-alpine AS backend-builder
+WORKDIR /app-backend
+COPY server/go.mod ./server/
+COPY server/main.go ./server/
+WORKDIR /app-backend/server
+RUN go build -o main .
+
+# --- Stage 3: Production Runtime (Alpine) ---
+FROM alpine:latest
 WORKDIR /app
 
-ENV NODE_ENV production
+# Install certificates for HTTPS calls if needed (though we only serve HTTP)
+RUN apk --no-cache add ca-certificates
 
-# Create a volume mount point for data persistence
+# Copy from builders
+COPY --from=frontend-builder /app-frontend/dist ./dist
+COPY --from=backend-builder /app-backend/server/main ./server
+
+# Create data directory
+RUN mkdir -p data
 VOLUME /app/data
 
-# Copy necessary files
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
+# Expose port
+EXPOSE 8080
+ENV PORT=8080
 
-EXPOSE 3000
-
-CMD ["npm", "start"]
+# Run the Go binary
+CMD ["./server"]
