@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
 export default function TVPage() {
-    const { tasks } = useTaskStore();
+    const { tasks, fetchTasks } = useTaskStore();
     const [mounted, setMounted] = useState(false);
     const [currentTime, setCurrentTime] = useState('');
 
@@ -13,11 +13,18 @@ export default function TVPage() {
         setMounted(true);
         // Initial Time
         setCurrentTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+        fetchTasks();
 
         const timer = setInterval(() => {
             setCurrentTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
         }, 1000);
-        return () => clearInterval(timer);
+
+        const syncTimer = setInterval(fetchTasks, 2000);
+
+        return () => {
+            clearInterval(timer);
+            clearInterval(syncTimer);
+        };
     }, []);
 
     if (!mounted) return <div className="min-h-screen bg-slate-950" />;

@@ -5,11 +5,14 @@ import { Check, Trash2, Clock } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 export default function TaskList() {
-    const { tasks, toggleTask, removeTask } = useTaskStore();
+    const { tasks, toggleTask, removeTask, fetchTasks } = useTaskStore();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
         setMounted(true);
+        fetchTasks();
+        const interval = setInterval(fetchTasks, 2000); // Poll for sync
+        return () => clearInterval(interval);
     }, []);
 
     if (!mounted) return null; // Avoid hydration mismatch with localStorage
