@@ -34,7 +34,7 @@ export const useTaskStore = create<TaskState>((set, get) => ({
 
         // Optimistic Update
         const newTask = {
-            id: crypto.randomUUID(),
+            id: Math.random().toString(36).substring(2, 9) + Date.now().toString(36),
             title: task.title.trim(),
             description: task.description,
             dueDate: task.dueDate,

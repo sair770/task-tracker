@@ -67,7 +67,7 @@ export default function TaskInput() {
                                 onChange={(e) => setInput(e.target.value)}
                                 onKeyDown={handleKeyDown}
                                 placeholder="e.g. 'Buy Milk tomorrow'"
-                                className="w-full p-4 pr-14 rounded-2xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-slate-900 focus:ring-4 focus:ring-slate-100 shadow-inner focus:outline-none transition-all resize-none text-lg"
+                                className="w-full p-4 pr-14 rounded-2xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-slate-900 focus:ring-4 focus:ring-slate-100 shadow-inner focus:outline-none transition-all resize-none text-lg text-slate-900 placeholder:text-slate-400"
                                 rows={3}
                             />
                             <button
